@@ -9,14 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.50.0",
     "@xyflow/react": "^12.6.4",
     "axios": "^1.9.0",
     "date-fns": "^4.1.0",
+    "mongodb": "^6.17.0",
     "next": "15.3.3",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "reactflow": "^11.11.4",
-    "survey-react": "^1.12.39"
+    "survey-react": "^1.12.39",
+    "survey-react-ui": "^2.2.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
