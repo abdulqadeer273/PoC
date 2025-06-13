@@ -17,18 +17,14 @@ import "reactflow/dist/style.css";
 
 import Toolbar from "./Toolbar";
 import WebhookNode from "./nodes/custom/WebhookNode";
-import SurveyNode from "./nodes/custom/SurveyNode";
 import DelayNode from "./nodes/custom/DelayNode";
 import ReminderNode from "./nodes/custom/ReminderNode";
-import DecisionNode from "./nodes/custom/DecisionNode";
 import { EdgeData, NodeData, NodeType } from "@/types/flow";
 
 const nodeTypes = {
   webhook: WebhookNode,
-  survey: SurveyNode,
   delay: DelayNode,
   reminder: ReminderNode,
-  decision: DecisionNode,
 };
 
 let id = 0;
