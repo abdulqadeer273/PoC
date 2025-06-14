@@ -17,13 +17,17 @@ export default function CompletedSurveysPage() {
   }, []);
 
   return (
-    <main className="max-w-4xl mx-auto my-8 p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Completed Surveys</h1>
+    <main className="w-full min-h-screen px-2 py-8">
+      <h1 className="w-full text-3xl font-bold mb-6 text-center">
+        Completed Surveys
+      </h1>
       {data.length === 0 ? (
-        <div className="text-center text-gray-500">No completed surveys found.</div>
+        <div className="w-full text-center text-gray-500">
+          No completed surveys found.
+        </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg shadow">
-          <table className="min-w-full bg-white border border-gray-200">
+        <div className="w-full overflow-x-auto rounded-lg shadow">
+          <table className="w-full min-w-[900px] bg-white border border-gray-200">
             <thead>
               <tr>
                 {Object.keys(data[0]).map((key) => (

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Toolbar from "./Toolbar";
 import WebhookNode from "./nodes/custom/WebhookNode";
 import DelayNode from "./nodes/custom/DelayNode";
@@ -27,12 +26,8 @@ const getId = () => `node_${id++}`;
 const FlowEditor = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [n8nApiKey, setN8nApiKey] = useState(
-    process.env.NEXT_PUBLIC_N8N_API_KEY || ""
-  ); // User can set this
-  const [n8nApiUrl, setN8nApiUrl] = useState(
-    process.env.NEXT_PUBLIC_N8N_URL || ""
-  );
+  const n8nApiKey=process.env.NEXT_PUBLIC_N8N_API_KEY;// User can set this
+  const n8nApiUrl = process.env.NEXT_PUBLIC_N8N_URL;
   // Add node handler
   interface CustomNodeData {
     label: string;
@@ -138,23 +133,6 @@ const FlowEditor = () => {
   return (
     <ReactFlowProvider>
       <div style={{ height: "100vh", width: "100vw" }}>
-        <div className="flex gap-2 p-2 bg-gray-900">
-          <input
-            className="px-2 py-1 rounded text-sm"
-            placeholder="n8n API URL"
-            value={n8nApiUrl}
-            onChange={(e) => setN8nApiUrl(e.target.value)}
-            style={{ minWidth: 200 }}
-          />
-          <input
-            className="px-2 py-1 rounded text-sm"
-            placeholder="n8n API Key"
-            value={n8nApiKey}
-            onChange={(e) => setN8nApiKey(e.target.value)}
-            style={{ minWidth: 200 }}
-          />
-        </div>
-
         <Toolbar
           onAddNode={onAddNode}
           nodes={nodes.filter(

@@ -73,7 +73,7 @@ export default function SurveyPage() {
   }, [survey]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 flex items-center justify-center py-8">
+    <div className="w-full min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 flex items-center justify-center py-8">
       <div className="w-full max-w-lg md:max-w-2xl lg:max-w-3xl bg-white rounded-2xl shadow-xl p-8">
         <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">Contact Survey</h1>
         {status && (
