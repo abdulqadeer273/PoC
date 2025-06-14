@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const { n8nApiUrl, n8nApiKey, workflow } = await req.json();
   if (!n8nApiUrl || !n8nApiKey || !workflow) {
     return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
   }
   try {
-    const res = await fetch(`${n8nApiUrl}/workflows/${params.id}`, {
+    const id = (await params).id;
+    const res = await fetch(`${n8nApiUrl}/workflows/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -24,14 +28,18 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const n8nApiUrl = req.nextUrl.searchParams.get("n8nApiUrl")!;
   const n8nApiKey = req.nextUrl.searchParams.get("n8nApiKey")!;
   if (!n8nApiUrl || !n8nApiKey) {
     return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
   }
   try {
-    const res = await fetch(`${n8nApiUrl}/workflows/${params.id}`, {
+    const id = (await params).id;
+    const res = await fetch(`${n8nApiUrl}/workflows/${id}`, {
       method: "DELETE",
       headers: { "X-N8N-API-KEY": n8nApiKey },
     });
