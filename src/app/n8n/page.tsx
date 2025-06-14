@@ -46,41 +46,46 @@ export default function N8nWorkflowsPage() {
   };
 
   return (
-    <main className="max-w-3xl mx-auto p-6">
+    <main className="w-full min-h-screen px-2 py-8">
       <h1 className="text-2xl font-bold mb-4">n8n Workflows</h1>
       {loading && <div>Loading...</div>}
       {error && <div className="text-red-600">{error}</div>}
-      <table className="w-full border mt-4 rounded-lg overflow-hidden shadow">
-        <thead>
-          <tr className="bg-blue-100">
-            <th className="p-3 border-b font-semibold text-blue-900 text-left">
-              Name
-            </th>
-            <th className="p-3 border-b font-semibold text-blue-900 text-left">
-              ID
-            </th>
-            <th className="p-3 border-b font-semibold text-blue-900 text-left">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {workflows.map((wf) => (
-            <tr key={wf.id} className="hover:bg-blue-50 transition hover:text-black">
-              <td className="p-3 border-b">{wf.name}</td>
-              <td className="p-3 border-b">{wf.id}</td>
-              <td className="p-3 border-b">
-                <button
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                  onClick={() => handleDelete(wf.id)}
-                >
-                  Delete
-                </button>
-              </td>
+      <div className="w-full overflow-x-auto rounded-lg shadow">
+        <table className="min-w-full bg-white border border-gray-200 text-xs md:text-sm">
+          <thead>
+            <tr className="bg-blue-100">
+              <th className="p-3 border-b font-semibold text-blue-900 text-left">
+                Name
+              </th>
+              <th className="p-3 border-b font-semibold text-blue-900 text-left">
+                ID
+              </th>
+              <th className="p-3 border-b font-semibold text-blue-900 text-left">
+                Actions
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {workflows.map((wf) => (
+              <tr
+                key={wf.id}
+                className="hover:bg-blue-50 transition text-black hover:text-black"
+              >
+                <td className="p-3 border-b">{wf.name}</td>
+                <td className="p-3 border-b">{wf.id}</td>
+                <td className="p-3 border-b">
+                  <button
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                    onClick={() => handleDelete(wf.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </main>
   );
 }

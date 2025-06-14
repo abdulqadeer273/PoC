@@ -65,7 +65,7 @@ export function useN8nWorkflows(n8nApiUrl: string, n8nApiKey: string) {
     setLoading(true);
     setError(null);
     const res = await fetch(`/api/n8n/workflow/${id}`, {
-      method: "PATCH",
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ n8nApiUrl, n8nApiKey, workflow }),
     });

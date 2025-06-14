@@ -27,13 +27,13 @@ export default function CompletedSurveysPage() {
         </div>
       ) : (
         <div className="w-full overflow-x-auto rounded-lg shadow">
-          <table className="w-full min-w-[900px] bg-white border border-gray-200">
+          <table className="min-w-full bg-white border border-gray-200 text-xs md:text-sm">
             <thead>
               <tr>
                 {Object.keys(data[0]).map((key) => (
                   <th
                     key={key}
-                    className="px-4 py-2 border-b bg-gray-100 text-left text-sm font-semibold text-gray-700"
+                    className="px-2 md:px-4 py-2 border-b bg-gray-100 text-left font-semibold text-gray-700"
                   >
                     {key}
                   </th>
@@ -44,13 +44,12 @@ export default function CompletedSurveysPage() {
               {data.map((row, idx) => (
                 <tr key={idx} className="hover:bg-gray-50">
                   {Object.values(row).map((value, i) => (
-                    <td
-                      key={i}
-                      className="px-4 py-2 border-b text-sm text-gray-800"
-                    >
-                      {typeof value === "string" || typeof value === "number"
-                        ? value
-                        : JSON.stringify(value)}
+                    <td key={i} className="px-2 md:px-4 py-2 border-b">
+                      <span className="break-all text-gray-800">
+                        {typeof value === "string" || typeof value === "number"
+                          ? value
+                          : JSON.stringify(value)}
+                      </span>
                     </td>
                   ))}
                 </tr>

@@ -10,7 +10,7 @@ async function getWorkflowByName(
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Failed to fetch workflows");
-  return (data.workflows || data).find((w: any) => w.name === name);
+  return (data?.data || data).find((w: any) => w.name === name);
 }
 
 export async function POST(req: NextRequest) {
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     if (existing) {
       // Update existing workflow
       const res = await fetch(`${n8nApiUrl}/workflows/${existing.id}`, {
-        method: "PATCH",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "X-N8N-API-KEY": n8nApiKey,

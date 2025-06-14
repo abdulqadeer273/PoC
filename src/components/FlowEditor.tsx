@@ -12,7 +12,6 @@ import ReactFlow, {
   ReactFlowProvider,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { NodeData } from "@/types/flow";
 
 const nodeTypes = {
   webhook: WebhookNode,
@@ -109,7 +108,7 @@ const FlowEditor = () => {
       staticData: { lastId: 1 },
     };
 
-    const res = await fetch("/api/n8n/create-workflow", {
+    const res = await fetch("/api/n8n/workflow", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -135,14 +134,6 @@ const FlowEditor = () => {
       <div style={{ height: "100vh", width: "100vw" }}>
         <Toolbar
           onAddNode={onAddNode}
-          nodes={nodes.filter(
-            (n): n is NodeData =>
-              typeof n.type === "string" && n.type !== undefined
-          )}
-          edges={edges.map((e) => ({
-            ...e,
-            label: typeof e.label === "string" ? e.label : undefined,
-          }))}
           onCreateN8nWorkflow={handleCreateN8nWorkflow}
         />
         <ReactFlow

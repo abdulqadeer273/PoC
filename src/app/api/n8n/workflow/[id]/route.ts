@@ -7,7 +7,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
   try {
     const res = await fetch(`${n8nApiUrl}/workflows/${params.id}`, {
-      method: "PATCH",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "X-N8N-API-KEY": n8nApiKey,

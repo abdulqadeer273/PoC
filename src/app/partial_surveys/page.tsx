@@ -23,13 +23,13 @@ export default function PartialSurveysPage() {
         <div className="w-full text-center text-gray-500">No partial surveys found.</div>
       ) : (
         <div className="w-full overflow-x-auto rounded-lg shadow">
-          <table className="w-full min-w-[900px] bg-white border border-gray-200">
+          <table className="min-w-full bg-white border border-gray-200 text-xs md:text-sm">
             <thead>
               <tr>
                 {Object.keys(data[0]).map((key) => (
                   <th
                     key={key}
-                    className="px-4 py-2 border-b bg-gray-100 text-left text-sm font-semibold text-gray-700"
+                    className="px-2 md:px-4 py-2 border-b bg-gray-100 text-left font-semibold text-gray-700"
                   >
                     {key}
                   </th>
@@ -42,11 +42,13 @@ export default function PartialSurveysPage() {
                   {Object.values(row).map((value, i) => (
                     <td
                       key={i}
-                      className="px-4 py-2 border-b text-sm text-gray-800"
+                      className="px-2 md:px-4 py-2 border-b"
                     >
-                      {typeof value === "string" || typeof value === "number"
-                        ? value
-                        : JSON.stringify(value)}
+                      <span className="break-all text-gray-800">
+                        {typeof value === "string" || typeof value === "number"
+                          ? value
+                          : JSON.stringify(value)}
+                      </span>
                     </td>
                   ))}
                 </tr>
