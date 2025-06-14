@@ -28,10 +28,10 @@ const FlowEditor = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [n8nApiKey, setN8nApiKey] = useState(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhOWY2NGNjZi1jNjA3LTQ4NTctYmNmMy1iNWQ3ZGY5NGYyMzgiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzQ5ODkyOTEyLCJleHAiOjE3NTI0NjU2MDB9._i26JwM3bLlAlgoBvnx3U-LFjWPpxPFeyedPu1p4MaI"
+    process.env.NEXT_PUBLIC_N8N_API_KEY || ""
   ); // User can set this
   const [n8nApiUrl, setN8nApiUrl] = useState(
-    "https://acai.app.n8n.cloud/api/v1"
+    process.env.NEXT_PUBLIC_N8N_URL || ""
   );
   // Add node handler
   interface CustomNodeData {
