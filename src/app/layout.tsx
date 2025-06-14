@@ -97,6 +97,11 @@ export default function RootLayout({
         <div className="flex min-h-screen">
           <Sidebar />
           <main className="flex-1 bg-gray-900 text-white p-2 md:p-6 overflow-auto min-h-screen">
+          <header className="bg-white shadow py-4 px-6 border-b border-gray-200">
+            <h1 className="text-xl font-semibold text-gray-800 text-center">
+              Survey Workflow Builder
+            </h1>
+          </header>
             {children}
           </main>
         </div>

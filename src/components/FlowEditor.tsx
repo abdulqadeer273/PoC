@@ -104,6 +104,7 @@ const FlowEditor = () => {
         return {
           parameters: {
             unit: n.data.unit, // e.g. "seconds", "minutes", etc.
+            amount:n.data.time,
           },
           id: n.id,
           name: n.data.label || "Delay",
