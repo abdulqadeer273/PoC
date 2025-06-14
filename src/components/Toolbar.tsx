@@ -2,17 +2,21 @@
 
 import { useCallback } from "react";
 import { useStore } from "reactflow";
-
-import { simulateFlow } from "@/lib/executeFlow";
 import { NodeData, EdgeData, NodeType } from "@/types/flow";
 
 type ToolbarProps = {
   onAddNode: (type: NodeType) => void;
   nodes: NodeData[];
   edges: EdgeData[];
+  onCreateN8nWorkflow: () => void;
 };
 
-const Toolbar: React.FC<ToolbarProps> = ({ onAddNode, nodes, edges }) => {
+const Toolbar: React.FC<ToolbarProps> = ({
+  onAddNode,
+  nodes,
+  edges,
+  onCreateN8nWorkflow,
+}) => {
   // Access nodes and edges from React Flow store
   const nodesFromStore = useStore((state) => state.getNodes());
   const edgesFromStore = useStore((state) => state.edges);
@@ -94,22 +98,14 @@ const Toolbar: React.FC<ToolbarProps> = ({ onAddNode, nodes, edges }) => {
           {type.charAt(0).toUpperCase() + type.slice(1)}
         </button>
       ))}
-      {/* <button
-        onClick={() => simulateFlow(nodes, edges)}
-        style={{
-          marginLeft: "1rem",
-          padding: "0.4rem 1rem",
-          background: "#3c3c3c",
-          color: "#fff",
-          border: "1px solid #555",
-          borderRadius: 6,
-          cursor: "pointer",
-        }}
-      >
-        ▶️ Run Flow
-      </button> */}
       <button
         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        onClick={onCreateN8nWorkflow}
+      >
+        Create n8n Workflow
+      </button>
+      <button
+        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
         onClick={runWorkflow}
       >
         Run Workflow

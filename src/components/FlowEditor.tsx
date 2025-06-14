@@ -1,25 +1,19 @@
 "use client";
 
-import React, { useCallback } from "react";
-import ReactFlow, {
-  ReactFlowProvider,
-  addEdge,
-  Background,
-  Controls,
-  MiniMap,
-  Connection,
-  useNodesState,
-  useEdgesState,
-  Node,
-  Edge,
-} from "reactflow";
-import "reactflow/dist/style.css";
-
+import { useState } from "react";
 import Toolbar from "./Toolbar";
 import WebhookNode from "./nodes/custom/WebhookNode";
 import DelayNode from "./nodes/custom/DelayNode";
 import ReminderNode from "./nodes/custom/ReminderNode";
-import { EdgeData, NodeData, NodeType } from "@/types/flow";
+import ReactFlow, {
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  Background,
+  ReactFlowProvider,
+} from "reactflow";
+import "reactflow/dist/style.css";
+import { NodeData } from "@/types/flow";
 
 const nodeTypes = {
   webhook: WebhookNode,
@@ -31,68 +25,161 @@ let id = 0;
 const getId = () => `node_${id++}`;
 
 const FlowEditor = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
-
-  const onConnect = useCallback(
-    (connection: Connection) =>
-      setEdges((eds) => addEdge({ ...connection, type: "default" }, eds)),
-    [setEdges]
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [n8nApiKey, setN8nApiKey] = useState(
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhOWY2NGNjZi1jNjA3LTQ4NTctYmNmMy1iNWQ3ZGY5NGYyMzgiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzQ5ODkyOTEyLCJleHAiOjE3NTI0NjU2MDB9._i26JwM3bLlAlgoBvnx3U-LFjWPpxPFeyedPu1p4MaI"
+  ); // User can set this
+  const [n8nApiUrl, setN8nApiUrl] = useState(
+    "https://acai.app.n8n.cloud/api/v1"
   );
+  // Add node handler
+  interface CustomNodeData {
+    label: string;
+  }
 
-  const handleAddNode = (type: NodeType) => {
-    const newNode: Node = {
-      id: getId(),
-      type: type.toLowerCase() as NodeType,
-      position: {
-        x: Math.random() * 300,
-        y: Math.random() * 300,
+  interface CustomNode {
+    id: string;
+    type: keyof typeof nodeTypes;
+    position: { x: number; y: number };
+    data: CustomNodeData;
+  }
+
+  const onAddNode = (type: keyof typeof nodeTypes) => {
+    setNodes((nds) => [
+      ...nds,
+      {
+        id: getId(),
+        type,
+        position: {
+          x: 250 + Math.random() * 100,
+          y: 100 + Math.random() * 100,
+        },
+        data: { label: `${type.charAt(0).toUpperCase() + type.slice(1)} Node` },
       },
-      data: { label: `${type} Node` },
-    };
-    setNodes((nds) => [...nds, newNode]);
+    ]);
   };
 
-  // Convert ReactFlow types to your custom types for the Toolbar
-  const convertedNodes: NodeData[] = nodes.map((node) => ({
-    id: node.id,
-    type: node.type as NodeType,
-    data: node.data,
-    position: node.position,
-  }));
+  // n8n Create Workflow Handler
+  const handleCreateN8nWorkflow = async () => {
+    if (!n8nApiKey || !n8nApiUrl) {
+      alert("Please enter your n8n API URL and API Key.");
+      return;
+    }
+    // Example: Map ReactFlow nodes to n8n workflow JSON
+    const n8nWorkflow = {
+      name: "POC Workflow",
+      nodes: nodes.map((n) => ({
+        parameters: {},
+        id: n.id,
+        name: n.data.label || n.type,
+        type:
+          n.type === "webhook"
+            ? "n8n-nodes-base.start"
+            : n.type === "delay"
+            ? "n8n-nodes-base.wait"
+            : n.type === "reminder"
+            ? "n8n-nodes-base.httpRequest" // or your custom node type
+            : "n8n-nodes-base.noOp",
+        typeVersion: 1,
+        position: [n.position.x, n.position.y],
+      })),
+      connections: edges.reduce((acc, edge) => {
+        const sourceNode = nodes.find((n) => n.id === edge.source);
+        const targetNode = nodes.find((n) => n.id === edge.target);
+        if (!sourceNode || !targetNode) return acc;
+        acc[sourceNode.data.label || sourceNode.type] = {
+          main: [
+            [
+              {
+                node: targetNode.data.label || targetNode.type,
+                type: "main",
+                index: 0,
+              },
+            ],
+          ],
+        };
+        return acc;
+      }, {} as Record<string, any>),
+      settings: {
+        saveExecutionProgress: true,
+        saveManualExecutions: true,
+        saveDataErrorExecution: "all",
+        saveDataSuccessExecution: "all",
+        executionTimeout: 3600,
+        errorWorkflow: "VzqKEW0ShTXA5vPj",
+        timezone: "America/New_York",
+        executionOrder: "v1",
+      },
+      staticData: { lastId: 1 },
+    };
 
-  const convertedEdges: EdgeData[] = edges.map((edge) => ({
-    id: edge.id,
-    source: edge.source,
-    target: edge.target,
-    label: typeof edge.label === "string" ? edge.label : undefined,
-  }));
+    const res = await fetch("/api/n8n/create-workflow", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        n8nApiUrl,
+        n8nApiKey,
+        workflow: n8nWorkflow,
+      }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      alert("POC Workflow created in n8n!");
+      console.log("n8n workflow created successfully:", data);
+    } else {
+      alert(
+        "Failed to create workflow in n8n: " + (data.error || "Unknown error")
+      );
+    }
+  };
 
   return (
-    <div style={{ height: "100vh", width: "100%" }}>
-      <ReactFlowProvider>
-        <Toolbar
-          onAddNode={handleAddNode}
-          nodes={convertedNodes}
-          edges={convertedEdges}
-        />
-        <div style={{ height: "calc(100% - 50px)" }}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            nodeTypes={nodeTypes}
-            fitView
-          >
-            <MiniMap />
-            <Controls />
-            <Background />
-          </ReactFlow>
+    <ReactFlowProvider>
+      <div style={{ height: "100vh", width: "100vw" }}>
+        <div className="flex gap-2 p-2 bg-gray-900">
+          <input
+            className="px-2 py-1 rounded text-sm"
+            placeholder="n8n API URL"
+            value={n8nApiUrl}
+            onChange={(e) => setN8nApiUrl(e.target.value)}
+            style={{ minWidth: 200 }}
+          />
+          <input
+            className="px-2 py-1 rounded text-sm"
+            placeholder="n8n API Key"
+            value={n8nApiKey}
+            onChange={(e) => setN8nApiKey(e.target.value)}
+            style={{ minWidth: 200 }}
+          />
         </div>
-      </ReactFlowProvider>
-    </div>
+
+        <Toolbar
+          onAddNode={onAddNode}
+          nodes={nodes.filter(
+            (n): n is NodeData =>
+              typeof n.type === "string" && n.type !== undefined
+          )}
+          edges={edges.map((e) => ({
+            ...e,
+            label: typeof e.label === "string" ? e.label : undefined,
+          }))}
+          onCreateN8nWorkflow={handleCreateN8nWorkflow}
+        />
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={(params) => setEdges((eds) => addEdge(params, eds))}
+          nodeTypes={nodeTypes}
+          fitView
+        >
+          <Background />
+        </ReactFlow>
+      </div>
+    </ReactFlowProvider>
   );
 };
 

@@ -1,4 +1,4 @@
-export type NodeType = "webhook" | "survey" | "delay" | "reminder" | "decision";
+export type NodeType = "webhook" | "delay" | "reminder";
 
 export interface NodeData {
   id: string;
