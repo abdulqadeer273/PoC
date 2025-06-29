@@ -12,6 +12,10 @@ export default function DelayNode({ data, id }: any) {
   const [time, setTime] = useState(data?.time || 1);
   const [unit, setUnit] = useState(data?.unit || "minutes");
 
+  const handleDelete = () => {
+    data?.onDelete?.(id);
+  };
+
   // Update node data when input changes
   useEffect(() => {
     data.onChange?.({ time, unit });
@@ -19,7 +23,14 @@ export default function DelayNode({ data, id }: any) {
   }, [time, unit]);
 
   return (
-    <div className="p-3 bg-yellow-100 text-yellow-900 rounded-lg border border-yellow-400 shadow min-w-[180px]">
+    <div className="p-3 bg-yellow-100 text-yellow-900 rounded-lg border border-yellow-400 shadow min-w-[180px] relative">
+      <button
+        onClick={handleDelete}
+        className="absolute -top-2 -right-2 w-6 h-6 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-800 rounded-full flex items-center justify-center text-xs font-bold border-2 border-gray-300 shadow-md"
+        title="Delete node"
+      >
+        ×
+      </button>
       <strong>⏳ Delay</strong>
       <div className="mt-2 flex items-center gap-2">
         <input
